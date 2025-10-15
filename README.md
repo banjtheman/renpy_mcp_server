@@ -15,11 +15,9 @@
 ### 🎥 Demo Video
 
 <p align="center">
-  <a href="media/videos/claude_renpy_mcp.mp4">
-    <img src="media/images/game_screenshot_3_dialogue.png" width="70%" alt="Watch Claude create a visual novel" />
-  </a>
+  <img src="media/videos/claude_renpy_mcp.gif" width="80%" alt="Claude creating a visual novel in real-time" />
 </p>
-<p align="center"><em>▶️ Click to watch Claude create a complete visual novel in minutes!</em></p>
+<p align="center"><em>Watch Claude create a complete visual novel in minutes!</em></p>
 
 ### 📸 Example Outputs
 
