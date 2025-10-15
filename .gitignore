@@ -205,3 +205,29 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Ren'Py MCP Server specific
+# Generated projects and workspaces
+workspace/
+**/workspace/
+*-dists/
+*-web/
+
+# Ren'Py SDK (users need to download this separately)
+renpy/
+renpy-*-sdk/
+
+# MCP configuration (contains user-specific paths and API keys)
+.mcp.json
+
+# Generated assets and builds
+assets/
+*.rpyc
+*.rpymc
+
+# Temporary files
+*.tmp
+*.temp
+
+# Test outputs
+nano_banana_test_output/

@@ -1,0 +1,37 @@
+[project]
+name = "renpy-mcp-server"
+version = "0.1.0"
+description = "Model Context Protocol server for building Ren'Py games"
+readme = "README.md"
+authors = [
+    { name = "banjtheman", email = "banjtheman@gmail.com" }
+]
+requires-python = ">=3.10,<3.12"
+dependencies = [
+    "fastmcp>=2.11.0",
+    "mcp>=1.12.3",
+    "pydantic>=2.6.0",
+    "structlog>=24.1.0",
+    "google-genai>=0.3.0",
+    "pillow>=10.0.0",
+    "rembg>=2.0.0",
+    "onnxruntime>=1.16.0",
+]
+
+[project.optional-dependencies]
+aws = [
+    "boto3>=1.28.0",
+]
+docker = [
+    "python-on-whales>=0.70.0",
+]
+
+[project.scripts]
+renpy-mcp-server = "renpy_mcp_server.__main__:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel.force-include]
+"src/renpy_mcp_server/templates" = "renpy_mcp_server/templates"

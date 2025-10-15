@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "renpy_mcp_server": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/ABSOLUTE/PATH/TO/renpy_mcp_server",
+        "run",
+        "renpy-mcp-server"
+      ],
+      "env": {
+        "GEMINI_API_KEY": "your-gemini-api-key-here",
+        "RENPY_SDK_PATH": "/path/to/renpy-sdk"
+      }
+    }
+  }
+}
+
