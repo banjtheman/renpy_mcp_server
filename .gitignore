@@ -1,3 +1,11 @@
+# added
+notes.txt
+bootstrap_renpy/
+node_modules/
+
+# Exception: include renpy_mcp_app lib folder
+!renpy_mcp_app/src/lib/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

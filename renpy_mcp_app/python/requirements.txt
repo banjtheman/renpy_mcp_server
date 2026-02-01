@@ -1,0 +1,17 @@
+# RenPy Studio Python Dependencies
+# These are installed in the managed virtual environment
+
+# Gemini API for image generation
+google-genai>=0.3.0
+
+# Image processing
+pillow>=10.0.0
+
+# Background removal for character sprites
+rembg>=2.0.0
+
+# ML runtime for rembg
+onnxruntime>=1.16.0
+
+# Structured logging
+structlog>=24.1.0

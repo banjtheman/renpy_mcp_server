@@ -268,6 +268,14 @@ class LocalRenpyToolchain:
         )
 
     def _find_executable(self) -> Optional[Path]:
+        # On macOS, prefer the app bundle since lib/py3-mac-universal may have .macho files
+        if platform.system() == "Darwin":
+            # Try both naming conventions for the app bundle
+            for app_name in ["renpy.app", "Ren'Py.app"]:
+                bundle = self.sdk_path / app_name / "Contents" / "MacOS" / "renpy"
+                if bundle.exists():
+                    return bundle.resolve()
+
         candidates = [
             self.sdk_path / "renpy.sh",
             self.sdk_path / "renpy.exe",
@@ -276,11 +284,6 @@ class LocalRenpyToolchain:
         for candidate in candidates:
             if candidate.exists():
                 return candidate.resolve()
-        # macOS app bundle fallback
-        if platform.system() == "Darwin":
-            bundle = self.sdk_path / "Ren'Py.app" / "Contents" / "MacOS" / "python"
-            if bundle.exists():
-                return bundle.resolve()
         return None
 
     def _build_env(self) -> dict[str, str]:
