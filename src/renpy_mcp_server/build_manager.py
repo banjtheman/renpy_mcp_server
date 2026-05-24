@@ -103,6 +103,18 @@ class LocalRenpyToolchain:
         return self.executable is not None
 
     async def build(self, project_dir: Path, request: BuildRequest) -> BuildResult:
+        """Build a Ren'Py project.
+
+        The actual work is shielded from cancellation so MCP-level timeouts
+        do not abort the post-build steps (extract zip, copy web runtime,
+        rebuild game.zip). If the outer await is cancelled by the MCP
+        framework, the inner Task keeps running in the background and the
+        build still completes on disk — subsequent `start_web_preview`
+        calls will find a usable build.
+        """
+        return await asyncio.shield(self._build_impl(project_dir, request))
+
+    async def _build_impl(self, project_dir: Path, request: BuildRequest) -> BuildResult:
         if not self.available:
             return BuildResult(
                 project_name=request.project_name,
@@ -224,9 +236,39 @@ class LocalRenpyToolchain:
                                     # Don't include game.zip itself
                                     if file_path == game_zip:
                                         continue
-                                    arcname = file_path.relative_to(web_dir)
+                                    # Force forward-slash separators in zip
+                                    # entry names. Emscripten's Linux-flavored
+                                    # Python runtime (which actually executes
+                                    # the game in the browser) cannot resolve
+                                    # paths stored with Windows backslashes,
+                                    # producing a misleading "BadZipFile" plus
+                                    # "No such file or directory: //main.py"
+                                    # at boot.
+                                    arcname = file_path.relative_to(web_dir).as_posix()
                                     zf.write(file_path, arcname)
-                                    logger.debug("Added to game.zip", file=str(arcname))
+                                    logger.debug("Added to game.zip", file=arcname)
+
+                        # Rename game.zip → game.data so that browser download-manager
+                        # extensions (e.g. IDM) do not intercept the fetch request that
+                        # the Emscripten runtime makes when loading the game. The VFS
+                        # path inside Emscripten ("/game.zip") is unaffected — it never
+                        # touches HTTP. We only need to change the HTTP URL, which means
+                        # renaming the file and patching the one line in index.html that
+                        # sets window.gameZipURL.
+                        game_data = web_dir / "game.data"
+                        if game_zip.exists():
+                            game_zip.rename(game_data)
+                            logger.info("Renamed game.zip → game.data (IDM bypass)")
+                        index_html = web_dir / "index.html"
+                        if index_html.exists():
+                            html = index_html.read_text(encoding="utf-8")
+                            html = html.replace(
+                                "window.gameZipURL = 'game.zip'",
+                                "window.gameZipURL = 'game.data'",
+                            )
+                            index_html.write_text(html, encoding="utf-8")
+                            logger.info("Patched index.html: gameZipURL → game.data")
+
                         output_path = web_dir
                     else:
                         logger.warning(
