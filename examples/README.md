@@ -1,4 +1,6 @@
-# Examples
+# Legacy MCP integration examples
+
+For new visual novels, start with the standalone [Ren'Py skill](../skills/renpy/SKILL.md) and the [repository quick start](../README.md). The skill authors games directly in the workspace with native ImageGen, web previews, and browser playtesting. The examples below use the legacy MCP server and its separate configuration.
 
 This directory contains examples of how to integrate the Ren'Py MCP Server with different AI agent frameworks.
 
@@ -109,7 +111,7 @@ export RENPY_SDK_PATH="/path/to/renpy-sdk"
 ## 🚀 Getting Started
 
 1. **Choose your framework**:
-   - **Claude Agent SDK**: Best for most users, simple setup
+   - **Claude Agent SDK**: Example using Claude's agent framework
    - **Strands**: For AWS/enterprise, programmatic control
 
 2. **Configure MCP connection**:

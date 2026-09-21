@@ -1,0 +1,5 @@
+{
+  "schema_version": 1,
+  "assets": [],
+  "note": "Record selected runtime files and useful provenance: master/reference paths, character and expression, prompt, dimensions, alpha, and selection status. Prefer project-relative paths. Runtime assets belong in game/images or game/audio."
+}

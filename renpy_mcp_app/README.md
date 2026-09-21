@@ -1,4 +1,6 @@
-# RenPy Studio
+# RenPy Studio — legacy MCP App
+
+For new visual novels, use the standalone [Ren'Py skill](../skills/renpy/SKILL.md) and follow the [repository quick start](../README.md). It works directly in the workspace with native ImageGen, web previews, and browser playtesting. This page documents the existing Studio MCP App, including its Gemini-based asset workflow and separate installation.
 
 An **MCP App** for creating visual novels directly inside Claude Desktop. Design characters, generate backgrounds, write dialogue, and play your game — all with AI-powered assistance.
 

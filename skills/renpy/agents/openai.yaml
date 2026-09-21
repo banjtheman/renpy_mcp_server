@@ -1,0 +1,3 @@
+interface:
+  display_name: "Ren'Py"
+  short_description: "Create and playtest visual novels with web controls"

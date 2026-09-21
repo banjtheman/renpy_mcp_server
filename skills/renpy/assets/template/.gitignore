@@ -1,0 +1,11 @@
+*.rpyc
+*.rpymc
+game/cache/
+game/saves/
+.renpy-agent/
+build/
+*.log
+log.txt
+errors.txt
+traceback.txt
+screenshot*.png

@@ -1,187 +1,98 @@
-# 🎮 Ren'Py MCP Server
+# Ren'Py Skill for Codex
 
-> **Build visual novels with AI!** An [Model Context Protocol](https://modelcontextprotocol.io/) server that lets AI assistants create complete Ren'Py visual novel games with images, dialogue, branching stories, and web deployment.
+Create visual novels directly in your workspace: write the story, generate character art, build for the web, and playtest in the browser.
 
-[![Version](https://img.shields.io/badge/version-4.1.4-blue.svg)](https://github.com/banjtheman/renpy_mcp_server)
-[![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
-[![MCP](https://img.shields.io/badge/MCP-1.0-green.svg)](https://modelcontextprotocol.io/)
+**Use the [Ren'Py skill](skills/renpy/SKILL.md) for new games.** It is the recommended workflow in this repository. The Python MCP server and Ren'Py Studio MCP App remain available for existing integrations; their setup is in the [legacy server guide](docs/LEGACY_MCP_SERVER.md) and [Studio documentation](renpy_mcp_app/README.md).
 
-<p align="center">
-  <img src="media/images/workflow_diagram.png" width="90%" alt="From AI-generated assets to playable game" />
-</p>
+## Install the skill
 
-## 🎬 See It In Action
+Install with the [Skills CLI](https://skills.sh/docs):
 
-### 🎥 Demo Video
-
-<p align="center">
-  <img src="media/videos/claude_renpy_mcp.gif" width="80%" alt="Claude creating a visual novel in real-time" />
-</p>
-<p align="center"><em>Watch Claude create a complete visual novel in minutes!</em></p>
-
-### 📸 Example Outputs
-
-**Generated Backgrounds (16:9)**
-
-<p align="center">
-  <img src="media/images/example_background_cafe.png" width="45%" alt="Cozy Cafe Interior" />
-  <img src="media/images/example_background_tennis.png" width="45%" alt="Tennis Court Scene" />
-</p>
-
-**Character Sprites with Multiple Emotions (2:3)**
-
-<p align="center">
-  <img src="media/images/example_character_emotions.png" width="80%" alt="Character showing 5 emotions: neutral, happy, sad, surprised, angry" />
-</p>
-<p align="center"><em>One character with 5 emotions (neutral, happy, sad, surprised, angry) - all generated in a single API call!</em></p>
-
-**Final Playable Games**
-
-<p align="center">
-  <img src="media/images/game_screenshot_3_dialogue.png" width="45%" alt="Game dialogue scene" />
-  <img src="media/images/game_screenshot_5_choice_menu.png" width="45%" alt="Interactive choice menu" />
-</p>
-<p align="center"><em>Fully playable web games with branching dialogue and player choices</em></p>
-
-## ✨ Features
-
-- 🎨 **AI Image Generation** - Backgrounds (16:9) and characters (2:3) using Gemini 2.5 Flash Image
-- 🎭 **Emotion System** - Generate 5 emotions per character in one API call (neutral, happy, sad, surprised, angry)
-- 📝 **Script Generation** - AI writes complete Ren'Py scripts with dialogue, choices, and branching paths
-- 🌐 **Web Builds** - Automatically compile to playable web games
-- 🎬 **Live Preview** - Local HTTP server to test games instantly
-- 🪄 **Transparent Sprites** - Automatic background removal for character sprites
-
-## 🚀 Quick Start
-
-### Automated Setup
-
-```bash
-# Clone and setup everything automatically
-git clone https://github.com/banjtheman/renpy_mcp_server.git
-cd renpy_mcp_server
-./setup.sh
-
-# Test your installation
-./test_setup.sh
-
-# (Optional) Test image generation directly
-uv run python test_nano_banana.py
+```sh
+npx skills add banjtheman/renpy_mcp_server --skill renpy --agent codex --global
 ```
 
-The `setup.sh` script will:
-- ✅ Install Python dependencies
-- ✅ Download and setup Ren'Py SDK (OS-specific)
-- ✅ Automatically install web support module
-- ✅ Help configure Gemini API key
-- ✅ Create MCP configuration files
-- ✅ Test everything works
+Omit `--global` for a project-local installation. Use `npx skills add banjtheman/renpy_mcp_server --list` to inspect the available skills before installing. Node.js/npm is needed for this installer; the Ren'Py helper itself uses Python.
 
-### MCP Client Configuration
+Or ask Codex to use its bundled installer:
 
-Add the server to your MCP client configuration (Claude Desktop, Cursor, etc.):
-
-```json
-{
-  "mcpServers": {
-    "renpy_mcp_server": {
-      "command": "uv",
-      "args": [
-        "--directory",
-        "/FULL_PATH_TO_RENPY_MCP_SERVER",
-        "run",
-        "renpy-mcp-server"
-      ],
-      "env": {
-        "GEMINI_API_KEY": "${GEMINI_API_KEY}",
-        "RENPY_SDK_PATH": "${RENPY_SDK_PATH}"
-      }
-    }
-  }
-}
+```text
+Use $skill-installer to install the Ren'Py skill from
+https://github.com/banjtheman/renpy_mcp_server/tree/main/skills/renpy
 ```
 
-**Replace:**
-- `/FULL_PATH_TO_RENPY_MCP_SERVER` - Full path to this repository
-- `${GEMINI_API_KEY}` - Your Gemini API key
-- `${RENPY_SDK_PATH}` - Path to Ren'Py SDK (e.g., `/path/to/renpy-8.4.1-sdk`)
+For a manual installation, copy the entire `skills/renpy` folder into your Codex skills directory. The bundled skill installer uses `$CODEX_HOME/skills`, which defaults to `~/.codex/skills`. Keep its scripts, assets, and references together. If a `renpy` skill already exists there, update that installation rather than nesting another folder inside it. The skill works independently of this repository once copied.
 
-**Or use environment variables:**
-```bash
-export GEMINI_API_KEY="your-api-key"
-export RENPY_SDK_PATH="/path/to/renpy-8.4.1-sdk"
+Start a fresh Codex task in the workspace where you want the game and ask:
+
+```text
+Use $renpy to make a short mystery visual novel with two distinct endings.
+Generate backgrounds and consistent character expressions with native ImageGen.
+Build it for the web, open the preview, and playtest both endings in the browser.
 ```
 
-### Manual Setup
+For an existing game, include its project path and the change you want. See [adopting the skill in an existing project](docs/MIGRATING_TO_SKILL.md).
 
-1. **Install Dependencies**
-   ```bash
-   uv sync
-   ```
+## What the workflow includes
 
-2. **Setup Ren'Py SDK**
-   - SDK and web module are automatically downloaded during setup
-   - No manual launcher interaction needed
+- **Direct authoring:** ordinary `.rpy` scripts, game assets, and concise story notes in your workspace.
+- **Native ImageGen:** backgrounds and character variants based on inspected references, with checks for lighting, pose, framing, and real transparency. The native host manages its image model.
+- **Reproducible web builds:** a pinned Ren'Py 8.5.3 SDK and matching web runtime, verified downloads, engine lint, and upstream `web_build` packaging.
+- **Local browser preview:** an owned loopback server, build logs, and explicit rebuild/reload behavior.
+- **Browser playtesting:** screenshots and story state, with WebMCP actions for reading state, starting, advancing dialogue, and choosing an option. An accessible controls panel is available when native WebMCP is unsupported.
 
-3. **Get Gemini API Key**
-   - Visit [Google AI Studio](https://aistudio.google.com/app/api-keys)
-   - Create an API key
+Game creation does not require configuring an MCP server, running the repository's `setup.sh`, or installing its Gemini dependencies. Those belong to the legacy integration. The skill's helper uses Python's standard library and the SDK's bundled runtime.
 
-4. **Configure Environment**
-   ```bash
-   export RENPY_SDK_PATH="/path/to/renpy-sdk"
-   export GEMINI_API_KEY="your-api-key"
-   ```
+## Requirements and tools
 
-5. **Add to MCP Client**
-   - See "MCP Client Configuration" section above
-   - The server will start automatically when your MCP client connects
+Use Python **3.11.8+**, network access for the initial SDK download, and a browser for preview. Generated art additionally needs native ImageGen in the host. WebMCP needs a compatible browser; ordinary gameplay and the fallback controls work without it. The SDK pin and browser workflow were verified on macOS; consult the [validation record](docs/RENPY_SKILL_VALIDATION.md) for the checks performed.
 
-## 🎮 Usage
+Codex normally invokes the helper for you. You can also use it directly from this checkout with a Python 3.11.8+ interpreter available as `python`:
 
-### Basic Workflow
+```sh
+python skills/renpy/scripts/renpy.py setup
+python skills/renpy/scripts/renpy.py doctor
+python skills/renpy/scripts/renpy.py init /absolute/path/my-game --title "My Game"
+python skills/renpy/scripts/renpy.py lint /absolute/path/my-game
+python skills/renpy/scripts/renpy.py build-web /absolute/path/my-game
+python skills/renpy/scripts/renpy.py serve /absolute/path/my-game
+```
 
-1. **Create a project**
-   ```
-   create_project(name="my_vn")
-   ```
+`serve` returns the preview URL. After edits, rebuild with `build-web /absolute/path/my-game --force` and reload the browser. Use `status /absolute/path/my-game` or `stop /absolute/path/my-game` with the same helper to inspect or stop the preview.
 
-2. **Generate assets**
-   ```
-   generate_background(project_name="my_vn", description="Cozy café interior, evening time...")
-   generate_character(project_name="my_vn", character_name="alice", description="Friendly barista...", generate_emotions=True)
-   ```
+Web builds go into a sibling `my-game-web` directory. The separate `test` command runs authored Ren'Py testcases and **opens a native game window**; browser playtests are the default for web previews.
 
-3. **Write the story**
-   ```
-   generate_script(project_name="my_vn", script_name="intro", script_content="label intro:\n    scene bg cafe\n    show alice happy\n    Alice \"Welcome!\"\n    return")
-   ```
+## Documentation
 
-4. **Inspect and edit** (optional)
-   ```
-   list_project_files(project_name="my_vn")  # See all files
-   read_project_file(project_name="my_vn", file_path="intro.rpy")  # Read a script
-   edit_project_file(project_name="my_vn", file_path="intro.rpy", content="...")  # Update it
-   ```
+- [Skill instructions](skills/renpy/SKILL.md)
+- [Story, art, and expression consistency](skills/renpy/references/story-and-art.md)
+- [SDK, builds, and preview](skills/renpy/references/toolchain.md)
+- [WebMCP and browser controls](skills/renpy/references/browser-control.md)
+- [Moving an existing game to the skill](docs/MIGRATING_TO_SKILL.md)
+- [Validation record](docs/RENPY_SKILL_VALIDATION.md)
+- [Contributing and running tests](CONTRIBUTING.md)
 
-5. **Build and preview**
-   ```
-   build_project(project_name="my_vn")
-   start_web_preview(project_name="my_vn")
-   ```
+## Watch Codex play through WebMCP
 
-## 📚 Documentation
+The web build exposes four semantic tools directly to a compatible browser. Codex can discover and invoke them through its browser's native WebMCP capability:
 
-- **[Examples](examples/README.md)** - Claude Agent SDK and Strands integration examples
+| Tool | What Codex can do |
+| --- | --- |
+| `renpy_get_state` | Read the visible dialogue, choices, phase, and deliberately public story variables. |
+| `renpy_start` | Start the game from its main menu. |
+| `renpy_advance` | Reveal or advance the current dialogue. |
+| `renpy_choose` | Select an enabled choice using its returned ID. |
 
-## 🤝 Contributing
+Actions use the current state revision so an agent cannot accidentally act on an outdated menu. The bridge runs inside the web game and preserves normal Ren'Py choice behavior. This is browser-native WebMCP; it does not require launching the repository's MCP server.
 
-We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+Playtests combine these state-driven actions with screenshots of the actual game. A JavaScript fallback or a successful build alone does not demonstrate native WebMCP. The [validation record](docs/RENPY_SKILL_VALIDATION.md) identifies the native calls and routes already exercised.
 
-## 📄 License
+The [timelapse recording plan](docs/DEMO_WALKTHROUGH.md) follows a real Codex session from the initial prompt through story, art, web build, and direct WebMCP gameplay. The new recording will be added here once captured; the older MCP demos are preserved in the legacy guide.
 
-MIT License - see [LICENSE](LICENSE) for details.
+## Existing MCP integrations
 
----
+The repository name remains `renpy_mcp_server`, so existing clone URLs continue to work. The server code, entry point, and Studio App remain in place. Use the [legacy MCP server guide](docs/LEGACY_MCP_SERVER.md), [MCP integration examples](examples/README.md), or [Studio App README](renpy_mcp_app/README.md) when maintaining those integrations.
 
-**Happy visual novel creating! 🎮✨**
+## License
+
+[MIT](LICENSE).

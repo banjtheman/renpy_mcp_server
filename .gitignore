@@ -239,3 +239,14 @@ assets/
 
 # Test outputs
 nano_banana_test_output/
+
+# Reusable Ren'Py skill source and bundled starter assets.
+!skills/renpy/
+!skills/renpy/assets/
+!skills/renpy/assets/**
+
+# Keep generated files out of the portable skill's bundled assets.
+skills/renpy/**/__pycache__/
+skills/renpy/**/*.py[codz]
+skills/renpy/**/*.rpyc
+skills/renpy/**/*.rpymc
